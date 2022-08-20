@@ -5,6 +5,7 @@ mfront_models_library(ChemicalReaction
   ChemicalReaction4)
 
 mfront_behaviours_library(ChemicalReaction
+  ChemicalReaction3b
   ChemicalReaction5
   ChemicalReaction5b
   ChemicalReaction5c
