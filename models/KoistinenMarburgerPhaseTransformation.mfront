@@ -1,0 +1,29 @@
+@DSL Model;
+@Model KoistinenMarburgerPhaseTransformation;
+@Author Thomas Helfer;
+@Date 27 / 01 / 2021;
+@UnitSystem SI;
+@UseQt true;
+@Description{
+  "Koistinen Dp, Marburger Re.. A general equation prescribing extent of"
+  "austenite - martensite transformation in pure Fe-C alloys and plain carbon "
+  "steels. Acta Metallurgica, vol.7, pp. 59-60, 1959."
+}
+
+@StateVariable real z;
+z.setEntryName("AustenitePhaseFraction");
+@PhysicalBounds z in [0:1];
+
+@ExternalStateVariable temperature T;
+T.setGlossaryName("Temperature");
+
+@Parameter invert_type<temperature> Km = 2.47e-2;
+@Parameter temperature Ms = 653.15;
+
+@Function PhaseTransition {
+  if (T < Ms) {
+    z = exp(-Km * (Ms - T));
+  } else {
+    z = 1;
+  }
+}

@@ -13,3 +13,9 @@ mfront_behaviours_library(ChemicalReaction
   ChemicalReaction5e
   ChemicalReaction6
   ChemicalReaction7)
+
+mfront_behaviours_library(UPUC
+  UPuCSolidSwellingModel)
+
+mfront_models_library(PhaseTransition
+  KoistinenMarburgerPhaseTransformation)

@@ -1,0 +1,27 @@
+@DSL DefaultModel;
+@Model SolidSwellingModel;
+@Material UPuC;
+@Author Thomas Helfer;
+@Date 06 / 12 / 2007;
+@Description {
+  "Billone, M.C. and Jankus, V.Z. and Kramer, J.M. and Yang, C.I."
+  "Progress in modeling carbide and nitride fuel performance in advanced "
+  "LMFBRs. Advanced LMFBR fuels conference. INIS Reference Number: 9379733"
+}
+
+@StateVariable strain s;
+s.setGlossaryName("SolidSwelling");
+
+@ExternalStateVariable real Bu;
+Bu.setGlossaryName("BurnUp (at.%)");
+
+@ExternalStateVariable real p;
+p.setGlossaryName("Porosity");
+
+@Parameter strain C1 = 8.e-3;
+@Parameter real p0 = 4.e-2;
+
+@Integrator {
+  const auto p_mts = p + dp / 2;
+  s += C1 * exp(p0 - p_mts) * dBu;
+}  // end of function compute
