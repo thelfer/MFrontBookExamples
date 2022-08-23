@@ -1,0 +1,75 @@
+@DSL Model;
+@Material ZircaloyAlloy;
+@Model PhaseTransformation;
+@Author Matthieu Le Saux / Thomas Helfer;
+@Date 03 / 01 / 17;
+@UnitSystem SI;
+
+@Description {
+  "Models of metallurgical behavior of the zircaloy"
+  "Documentation of code_aster. R4.04.04"
+}
+
+//! fraction of the beta phase
+@StateVariable real yb;
+yb.setDepth(1);
+yb.setEntryName("BetaPhaseFraction");
+@PhysicalBounds yb in [0:1];
+
+@ExternalStateVariable temperature T;  // temperature (en K)
+T.setDepth(1);
+T.setGlossaryName("Temperature");
+
+@MaterialProperty real T0;
+@MaterialProperty real K0;
+@MaterialProperty real n0;
+// alpha->beta
+@MaterialProperty real Kc;
+@MaterialProperty real Qc;
+@MaterialProperty real nc;
+@MaterialProperty real Ac;
+@MaterialProperty real Bc;
+// beta->alpha
+@MaterialProperty real Kr1;
+@MaterialProperty real Kr2;
+@MaterialProperty real Ar;
+@MaterialProperty real Br;
+
+@Function PhaseTransition {
+  constexpr const auto TK = temperature{273.15};
+  // minimal beta phase fraction
+  constexpr auto ybmin = 1.e-10;
+  // maximal beta phase fraction
+  constexpr auto ybmax = 1 - ybmin;
+  //
+  //   if (fpclassify(dt) == 0) {
+  //     return SUCCESS;
+  //   }
+  //
+  const auto T_mts = (T + T_1) / 2;
+  const auto yb_eq = 1 - exp(-pow(K0 * max(T_mts - T0, real(0)), n0));
+  const auto dT_dt = (T - T_1) / dt;
+  auto dyb = real{};
+  if (yb_1 < yb_eq) {
+    if (yb_1 < ybmax) {
+      // alpha->beta
+      const auto Teq = T0 + (pow(-log(1 - max(yb_1, 0.01)), 1 / n0)) / K0;
+      const auto Tsc = max(TK + Ac * pow(abs(dT_dt), Bc), Teq);
+      if (T_mts > Tsc) {
+        dyb = dt * Kc * exp(-Qc / T_mts) * pow(abs(T_mts - Teq), nc);
+      }
+    }
+  } else {
+    // beta->alpha
+    if (yb_1 > ybmin) {
+      const auto Teq = T0 + (pow(-log(1 - min(yb_1, 0.99)), 1 / n0)) / K0;
+      const auto Tsr = min(Br * log(abs(dT_dt)), Teq);
+      if (T_mts < Tsr) {
+        const auto DTe = abs(T_mts - Teq);
+        const auto A = dt * DTe * exp(Kr1 + Kr2 * DTe);
+        dyb = -A * yb_1 * (1 - yb_1);
+      }
+    }
+  }
+  yb = max(min(yb_1 + dyb, ybmax), real(0));
+}

@@ -1,0 +1,6 @@
+@DSL MaterialLaw;
+@Law YoungModulus;
+@Input T, f;
+@Function {
+  res = 2.2693e11 * (1 - 2.5 * f) * (1 - 6.786e-05 * T - 4.23e-08 * T * T);
+}

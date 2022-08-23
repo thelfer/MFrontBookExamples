@@ -18,4 +18,5 @@ mfront_behaviours_library(UPUC
   UPuCSolidSwellingModel)
 
 mfront_models_library(PhaseTransition
-  KoistinenMarburgerPhaseTransformation)
+  KoistinenMarburgerPhaseTransformation
+  ZircaloyAlloyPhaseTransformation)
