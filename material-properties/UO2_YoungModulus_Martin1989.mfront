@@ -1,7 +1,7 @@
 @DSL MaterialLaw{default_out_of_bounds_policy : "Strict"};
 @Material UO2;                 // material name
 @Law YoungModulus_Martin1989;  // name of the material property
-@Author T.Helfer;              // author name
+@Author Thomas Helfer;         // author name
 @Date 04 / 04 / 2014;          // implentation date
 @Description                   // detailled description
 {

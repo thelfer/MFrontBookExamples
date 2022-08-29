@@ -1,0 +1,28 @@
+@DSL MaterialLaw;
+@Material UO2;
+@Law FirstLameCoefficient_MFrontBook2022;
+@Author Thomas Helfer;
+@Date 25 / 08 / 2022;
+@Description {
+  An example showing how to use the `@MaterialLaw` keyword
+}
+
+@UnitSystem SI;
+@UseQt true;
+
+@Output stress λ;
+λ.setGlossaryName("FirstLameCoefficient");
+
+@StateVariable temperature T;
+T.setGlossaryName("Temperature");
+@StateVariable real f;
+f.setGlossaryName("Porosity");
+
+@Parameter real ν = 0.3;
+
+@MaterialLaw "UO2_YoungModulus_Martin1989.mfront";
+
+@Function {
+  const auto E = UO2_YoungModulus_Martin1989(T, f);
+  λ = ν * E / ((1 + ν) * (1 - 2 * ν));
+}
