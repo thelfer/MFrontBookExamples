@@ -1,0 +1,51 @@
+'DEBPROC' GETEVOL X0*'FLOTTANT'
+  X1*'FLOTTANT'
+  nx*'ENTIER'
+  TLoi*'TABLE'
+  vvar*'MOT'
+  values*'TABLE';
+  'MESSAGE' '----------------------' ;
+  'MESSAGE' ' Début : ' X0;
+  'MESSAGE' ' Fin : ' X1;
+  'MESSAGE' ' Nombre de valeurs : ' nx;
+  'MESSAGE' ' Loi : librairie : ' TLoi.'LIBRAIRIE';
+  'MESSAGE' ' Loi : Modèle : ' TLoi.'MODELE';
+  vdime=('VALEUR' 'DIME');
+  velem=('VALEUR' 'ELEM');
+  'OPTION' 'DIME' 1;
+  'OPTION' 'ELEM' SEG2;
+  lx = 'DROIT' ('POIN' X0) ('POIN' X1) nx;
+  modv = 'MODELISER' lx 'THERMIQUE' 'ISOTROPE';
+  xx = 'COORDONNEE' 1 lx ;
+  vpo = 'CHANGER' xx 'COMP' vvar;
+  vel = 'CHANGER' 'CHAM' vpo modv ;
+  nb = 'DIME' (TLoi.'VARIABLES');
+  'REPETER' bcl nb;
+    vvari = 'EXTRAIRE' (Tloi.'VARIABLES') &bcl;
+    'SI'('NEG' vvari vvar);
+      vel = vel 'ET' ('MANUEL' 'CHML' modv vvari (values.vvari));
+    'FINSI';
+  'FIN' bcl;
+  matE = 'MANUEL' 'CHML' modv 'Y' TLoi;
+  Kel = 'VARI' 'NUAG' modv matE vel;
+  Kpo = 'CHANGER' 'CHPO' Kel modv ;
+  evabs = 'EVOL' 'CHPO' vpo lx vvar;
+  evordo = 'EVOL' 'CHPO' Kpo lx 'Y';
+  labs = 'EXTRAIRE' evabs 'ORDO' ;
+  lordo = 'EXTRAIRE' evordo 'ORDO' ;
+  cou = 'EVOL' 'MANUEL' labs vvar lordo ;
+  cou = cou 'COULEUR' 'JAUNE';
+  'OPTION' 'DIME' vdime;
+  'OPTION' 'ELEM' velem;
+'FINPROC' cou ;
+
+'OPTION' 'DIME' 3;
+'OPTION' 'ELEM' 'QUA4';
+TLoi = 'TABLE';
+TLoi.'LIBRAIRIE' = 'CHAINE' 'libCastemUO2.so';
+TLoi.'MODELE' = 'CHAINE' 'UO2_YoungModulus_Martin1989';
+TLoi.'VARIABLES' = 'MOTS' 'T' 'PORO';
+val = 'TABLE';
+val.'PORO' = 0.1;
+ev = GETEVOL 300. 2400. 100 TLoi 'T' val;
+'DESSIN' ev;
