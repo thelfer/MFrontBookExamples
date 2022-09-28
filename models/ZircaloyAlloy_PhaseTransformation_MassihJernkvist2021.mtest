@@ -1,0 +1,11 @@
+@Author Thomas Helfer;
+@Date   31/08/2022;
+
+@Behaviour<castem> 'src/libUmatZircaloyAlloy.so' 'umatzircaloyalloyphasetransformation_massihjernkvist2021';
+
+@Real 'q' 100;
+@ExternalStateVariable<function> 'Temperature' 'q*t' ;
+@ExternalStateVariable 'ExcessOxygenWeightFraction' 0;
+@ExternalStateVariable 'HydrogenWeightFraction' 0;
+
+@Times{0, '1300/q' in 100};

@@ -19,4 +19,5 @@ mfront_behaviours_library(UPUC
 
 mfront_models_library(PhaseTransition
   KoistinenMarburgerPhaseTransformation
-  ZircaloyAlloyPhaseTransformation)
+  ZircaloyAlloyPhaseTransformation
+  ZircaloyAlloy_PhaseTransformation_MassihJernkvist2021)

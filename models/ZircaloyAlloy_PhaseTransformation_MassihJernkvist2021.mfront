@@ -1,0 +1,58 @@
+@DSL RungeKuttaModel;
+@Material ZircaloyAlloy;
+@Model PhaseTransformation_MassihJernkvist2021;
+@Author Thomas Helfer;
+@Date 31 / 08 / 2022;
+@UseQt true;
+@UnitSystem SI;
+
+@Description {
+  "Solid state phase transformation kinetics in Zr-base alloys"
+  "Massih, A. R. and Jernkvist, Lars O"
+  "Scientific Reports. 2021"
+}
+
+@Algorithm rk54;
+@Epsilon 1e-4;
+
+//! fraction of the beta phase
+@StateVariable real yβ;
+yβ.setEntryName("BetaPhaseFraction");
+
+@ExternalStateVariable real xₒ;
+xₒ.setEntryName("ExcessOxygenWeightFraction");
+@Bounds xₒ in [0:1e-2];
+@ExternalStateVariable real xₕ;
+xₕ.setEntryName("HydrogenWeightFraction");
+@Bounds xₕ in [0:1e-3];
+
+@Parameter temperature T0α = 1075;
+@Parameter temperature A1α = 2.713e5;
+@Parameter temperature A2α = 1.52e5;
+@Parameter real mα  = 1.732;
+@Parameter temperature T0β  = 1250;
+@Parameter temperature A1β  = 3.138e4;
+@Parameter temperature A2β  = 2.2e4;
+@Parameter real mβ = 0.929;
+@Parameter real cT = 2.3;
+
+@Parameter temperature Tτ = 16650;
+@Parameter frequency Aτ = 60457;
+@Parameter invert_type<temperature> Bτ = 18129;
+@Parameter time tτ = 25;
+
+@Derivative {
+  const auto Tα = T0α + A1α * pow(xₒ, mα) - A2α * xₕ;
+  const auto Tβ = T0β + A1β * pow(xₒ, mβ) - A2β * xₕ;
+  const auto T_mid = (Tβ + Tα) / 2;
+  const auto T_span = (Tβ - Tα) / (2 * cT);
+  const auto yβ_eq = (1 + tanh((T - T_mid) / T_span)) / 2;
+  const auto τ = [this, yβ_eq] {
+    if (yβ > yβ_eq) {
+      const auto Tbτ = tτ * abs(dT);
+      return exp(Tτ / (T + Tbτ)) / (Aτ + Bτ * abs(∂ₜT));
+    }
+    return exp(Tτ / T) / (Aτ + Bτ * abs(∂ₜT));
+  }();
+  ∂ₜyβ = (yβ_eq - yβ) / τ;
+}

@@ -1,6 +1,6 @@
 @DSL Model;
 @Material ZircaloyAlloy;
-@Model PhaseTransformation;
+@Model PhaseTransformation_SRMA;
 @Author Matthieu Le Saux / Thomas Helfer;
 @Date 03 / 01 / 17;
 @UnitSystem SI;
