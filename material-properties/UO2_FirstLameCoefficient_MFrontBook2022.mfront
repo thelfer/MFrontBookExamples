@@ -19,6 +19,7 @@ T.setGlossaryName("Temperature");
 f.setGlossaryName("Porosity");
 
 @Parameter real ν = 0.3;
+ν.setGlossaryName("PoissonRatio");
 
 @MaterialLaw "UO2_YoungModulus_Martin1989.mfront";
 
