@@ -1,6 +1,6 @@
 @Author Thomas Helfer;
 @Date   09/08/2022;
-@Model 'src/libBehaviour.so' 'ChemicalReaction3b';
+@Model @library@ 'ChemicalReaction3b';
 
 @MaximumNumberOfSubSteps 100;
 @DynamicTimeStepScaling true;
